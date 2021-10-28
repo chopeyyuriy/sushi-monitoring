@@ -15,7 +15,6 @@ const Monitoring = () => {
     }, [])
 
     return (
-      <Row>
         <FullCard title='Очередь'>
           <thead>
             <tr>
@@ -42,7 +41,6 @@ const Monitoring = () => {
               }
           </tbody>
         </FullCard>
-      </Row>
     )
   }
 export default Monitoring

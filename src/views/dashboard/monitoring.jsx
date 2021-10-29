@@ -1,10 +1,25 @@
 import React, {useEffect, useState } from 'react';
 import DataTable from "react-data-table-component";
 import Pusher from 'pusher-js';
+import styled from 'styled-components';
 
+const StyledCalendar = styled.div`
+  color: grey;
+  background: #fff;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  input {
+    color: gray;
+    border: 1px gray solid;
+  }
+`;
 const Monitoring = () => {
     const [restaurants, setRestaurants] = useState([]);
+    const [calendar, setCalendar] = useState();
     let allRestaurants = [];
+
     const columns = [
       {
         name: "Ресторан",
@@ -35,7 +50,12 @@ const Monitoring = () => {
         name: "Остаток по ваучерам",
         selector: "voucher_max",
         sortable: true,
-      }
+      },
+      {
+        name: "Продано ваучеров",
+        selector: "vouchers_remains",
+        sortable: true,
+      },
     ];
 
     useEffect(() => {
@@ -61,6 +81,7 @@ const Monitoring = () => {
                       voucher_without_delivery:  e.settings[0].queue_voucher,
                       voucher_with_delivery:  e.settings[0].queue_voucher_delivery,
                       voucher_max:  e.settings[0].max_voucher ,
+                      vouchers_remains: e.vouchers_remains
                   }
               ])
           })
@@ -80,15 +101,24 @@ const Monitoring = () => {
                           with_delivery:  e.settings[0].queue_delivery,
                           voucher_without_delivery:  e.settings[0].queue_voucher,
                           voucher_with_delivery:  e.settings[0].queue_voucher_delivery,
-                          voucher_max:  e.settings[0].max_voucher ,
+                          voucher_max:  e.settings[0].max_voucher,
+                          vouchers_remains: e.vouchers_remains
                       }
                   ])
               })
           })
     }, [])
 
+    useEffect(() => {
+      console.log({calendar})
+    }, [calendar])
+
 
     return (
+      <div>
+        <StyledCalendar>
+          <input type="date" onChange={(e) => setCalendar(e.target.value)}/>
+        </StyledCalendar>
         <DataTable
           columns={columns}
           data={restaurants}
@@ -98,6 +128,7 @@ const Monitoring = () => {
           pagination
           highlightOnHover
         />
+      </div>
     )
   }
 export default Monitoring

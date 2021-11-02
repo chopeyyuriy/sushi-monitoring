@@ -56,6 +56,16 @@ const Monitoring = () => {
         selector: "vouchers_remains",
         sortable: true,
       },
+      {
+        name: "Бронь для обычных заказов",
+        selector: "simple_order_time_disabled",
+        sortable: true,
+      },
+      {
+        name: "Бронь для товаров по ваучеру",
+        selector: "voucher_order_time_disabled",
+        sortable: true,
+      }
     ];
 
     useEffect(() => {
@@ -70,8 +80,23 @@ const Monitoring = () => {
   
       const channel = pusher.subscribe('setting-update');
       channel.bind('setting-update', (data) => {
+        alert('update')
         allRestaurants= data;
-        allRestaurants.response.restaurantsSettings.map((e,i) => {
+        allRestaurants.restaurantsSettings.map((e,i) => {
+
+          let simpleOrderTime = [];
+          let simpleVoucherTime = [];
+          if (e.settings[0].simple_order_time_disabled ) {
+            e.settings[0].simple_order_time_disabled.map(e => {
+              simpleOrderTime.push(`${e};  `)
+            })
+          }
+          if (e.settings[0].voucher_order_time_disabled ) {
+            e.settings[0].simple_order_time_disabled.map(e => {
+              simpleVoucherTime.push(`${e};  `)
+            })
+          }
+
           setRestaurants(prevState => [...prevState,
                   {
                       id: i ,
@@ -81,18 +106,33 @@ const Monitoring = () => {
                       voucher_without_delivery:  e.settings[0].queue_voucher,
                       voucher_with_delivery:  e.settings[0].queue_voucher_delivery,
                       voucher_max:  e.settings[0].max_voucher ,
-                      vouchers_remains: e.vouchers_remains
+                      vouchers_remains: e.vouchers_remainsб,
+                      simple_order_time_disabled: simpleOrderTime,
+                      voucher_order_time_disabled: simpleVoucherTime
                   }
               ])
           })
 
       });
 
-      fetch('http://mysushi.rieltcrm.online/api/restaurants-settings', {
+      fetch('https://mere.mysushi.ee/api/restaurants-settings', {
             method: "GET"
         }).then(resp => resp.json())
           .then(data => {
-              data.response.restaurantsSettings.map((e,i) => {
+            
+              data.restaurantsSettings.map((e,i) => {
+                let simpleOrderTime = [];
+                let simpleVoucherTime = [];
+                if (e.settings[0].simple_order_time_disabled ) {
+                  e.settings[0].simple_order_time_disabled.map(e => {
+                    simpleOrderTime.push(`${e}   `)
+                  })
+                }
+                if (e.settings[0].voucher_order_time_disabled ) {
+                  e.settings[0].simple_order_time_disabled.map(e => {
+                    simpleVoucherTime.push(`${e}   `)
+                  })
+                }
                   setRestaurants(prevState => [...prevState,
                       {
                           id: e.id ,
@@ -102,7 +142,9 @@ const Monitoring = () => {
                           voucher_without_delivery:  e.settings[0].queue_voucher,
                           voucher_with_delivery:  e.settings[0].queue_voucher_delivery,
                           voucher_max:  e.settings[0].max_voucher,
-                          vouchers_remains: e.vouchers_remains
+                          vouchers_remains: e.vouchers_remains,
+                          simple_order_time_disabled: simpleOrderTime,
+                          voucher_order_time_disabled: simpleVoucherTime
                       }
                   ])
               })
@@ -128,6 +170,7 @@ const Monitoring = () => {
           pagination
           paginationPerPage="30"
           highlightOnHover
+          width="auto"
         />
       </div>
     )

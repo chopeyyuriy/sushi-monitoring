@@ -17,8 +17,7 @@ const StyledCalendar = styled.div`
 `;
 const Monitoring = () => {
     const [restaurants, setRestaurants] = useState([]);
-    const [calendar, setCalendar] = useState();
-    let allRestaurants = [];
+    const [calendar, setCalendar] = useState()
 
     const columns = [
       {
@@ -81,22 +80,22 @@ const Monitoring = () => {
       });
   
       const channel = pusher.subscribe('setting-update');
-      channel.bind('setting-update', (data) => {
-        setRestaurants([]);
-        alert('yes')
+    
+      channel.bind('App\\Events\\Manager\\SettingUpdate', (data) => {
+        setRestaurants([])
         data.restaurantsSettings.map((e,i) => {
           setRestaurants(prevState => [...prevState,
                   {
-                      id: i ,
+                      id: e.id ,
                       restaurant: e.name,
                       without_delivery: e.settings[0].queue ,
                       with_delivery:  e.settings[0].queue_delivery,
                       voucher_without_delivery:  e.settings[0].queue_voucher,
                       voucher_with_delivery:  e.settings[0].queue_voucher_delivery,
-                      voucher_max:  e.settings[0].max_voucher ,
+                      voucher_max:  e.settings[0].max_voucher,
                       vouchers_remains: e.vouchers_remains,
                       simple_order_time_disabled: e.settings[0].simple_order_time_disabled ? e.settings[0].simple_order_time_disabled.map(e => `${e}  `) : '',
-                      voucher_order_time_disabled: e.settings[0].voucher_order_time_disabled ? e.settings[0].voucher_order_time_disabled.map(e => `${e}  `) : ''
+                      voucher_order_time_disabled: e.settings[0].voucher_order_time_disabled ? e.settings[0].voucher_order_time_disabled.map(e =>  `${e}  `) : ''
                   }
               ])
           })

@@ -126,6 +126,7 @@ const Monitoring = () => {
           defaultSortField="id"
           defaultSortAsc={false}
           pagination
+          paginationPerPage="30"
           highlightOnHover
         />
       </div>

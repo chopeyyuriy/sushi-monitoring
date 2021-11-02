@@ -80,6 +80,9 @@ const Monitoring = () => {
   
       const channel = pusher.subscribe('setting-update');
       channel.bind('setting-update', (data) => {
+        Pusher.logToConsole = true;
+        alert(JSON.stringify(data));
+        
         allRestaurants= data;
         allRestaurants.restaurantsSettings.map((e,i) => {
           setRestaurants(prevState => [...prevState,

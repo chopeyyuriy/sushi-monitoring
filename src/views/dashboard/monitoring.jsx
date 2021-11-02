@@ -80,7 +80,6 @@ const Monitoring = () => {
   
       const channel = pusher.subscribe('setting-update');
       channel.bind('setting-update', (data) => {
-        alert('update')
         allRestaurants= data;
         allRestaurants.restaurantsSettings.map((e,i) => {
 
@@ -119,7 +118,7 @@ const Monitoring = () => {
             method: "GET"
         }).then(resp => resp.json())
           .then(data => {
-            
+              console.log(data)
               data.restaurantsSettings.map((e,i) => {
                 let simpleOrderTime = [];
                 let simpleVoucherTime = [];

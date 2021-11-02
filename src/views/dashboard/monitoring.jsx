@@ -23,54 +23,54 @@ const Monitoring = () => {
     const columns = [
       {
         name: "Ресторан",
-        selector: "restaurant",
+        selector: row => row.restaurant,
         sortable: true
       },
       {
         name: "без доставки",
-        selector: "without_delivery",
+        selector: row => row.without_delivery,
         sortable: true
       },
       {
         name: "с доставкой",
-        selector: "with_delivery",
+        selector: row =>  row.with_delivery,
         sortable: true,
       },
       {
         name: "ваучеров  без доставки",
-        selector: "voucher_without_delivery",
+        selector: row => row.voucher_without_delivery,
         sortable: true
       },
       {
         name: "ваучеров  с доставкой",
-        selector: "voucher_with_delivery",
+        selector: row =>  row.voucher_with_delivery,
         sortable: true
       },
       {
         name: "Остаток по ваучерам",
-        selector: "voucher_max",
+        selector: row =>  row.voucher_max,
         sortable: true,
       },
       {
         name: "Продано ваучеров",
-        selector: "vouchers_remains",
+        selector: row =>  row.vouchers_remains,
         sortable: true,
       },
       {
         name: "Бронь для обычных заказов",
-        selector: "simple_order_time_disabled",
+        selector: row =>  row.simple_order_time_disabled,
         sortable: true,
+        width: "auto"
       },
       {
         name: "Бронь для товаров по ваучеру",
-        selector: "voucher_order_time_disabled",
+        selector: row =>  row.voucher_order_time_disabled,
         sortable: true,
+        width: "auto"
       }
     ];
 
-    useEffect(() => {
-      Pusher.logToConsole = true;
-      
+    useEffect(() => {      
       const pusher = new Pusher('c5d9a52120e033bb2f56', {
         app_id: "1289297",
         key: "c5d9a52120e033bb2f56",
@@ -82,20 +82,6 @@ const Monitoring = () => {
       channel.bind('setting-update', (data) => {
         allRestaurants= data;
         allRestaurants.restaurantsSettings.map((e,i) => {
-
-          let simpleOrderTime = [];
-          let simpleVoucherTime = [];
-          if (e.settings[0].simple_order_time_disabled ) {
-            e.settings[0].simple_order_time_disabled.map(e => {
-              simpleOrderTime.push(`${e};  `)
-            })
-          }
-          if (e.settings[0].voucher_order_time_disabled ) {
-            e.settings[0].simple_order_time_disabled.map(e => {
-              simpleVoucherTime.push(`${e};  `)
-            })
-          }
-
           setRestaurants(prevState => [...prevState,
                   {
                       id: i ,
@@ -105,9 +91,9 @@ const Monitoring = () => {
                       voucher_without_delivery:  e.settings[0].queue_voucher,
                       voucher_with_delivery:  e.settings[0].queue_voucher_delivery,
                       voucher_max:  e.settings[0].max_voucher ,
-                      vouchers_remains: e.vouchers_remainsб,
-                      simple_order_time_disabled: simpleOrderTime,
-                      voucher_order_time_disabled: simpleVoucherTime
+                      vouchers_remains: e.vouchers_remains,
+                      simple_order_time_disabled: e.settings[0].simple_order_time_disabled ? e.settings[0].simple_order_time_disabled.map(e => `${e}  `) : '',
+                      voucher_order_time_disabled: e.settings[0].voucher_order_time_disabled ? e.settings[0].voucher_order_time_disabled.map(e => `${e}  `) : ''
                   }
               ])
           })
@@ -118,20 +104,7 @@ const Monitoring = () => {
             method: "GET"
         }).then(resp => resp.json())
           .then(data => {
-              console.log(data)
               data.restaurantsSettings.map((e,i) => {
-                let simpleOrderTime = [];
-                let simpleVoucherTime = [];
-                if (e.settings[0].simple_order_time_disabled ) {
-                  e.settings[0].simple_order_time_disabled.map(e => {
-                    simpleOrderTime.push(`${e}   `)
-                  })
-                }
-                if (e.settings[0].voucher_order_time_disabled ) {
-                  e.settings[0].simple_order_time_disabled.map(e => {
-                    simpleVoucherTime.push(`${e}   `)
-                  })
-                }
                   setRestaurants(prevState => [...prevState,
                       {
                           id: e.id ,
@@ -142,19 +115,14 @@ const Monitoring = () => {
                           voucher_with_delivery:  e.settings[0].queue_voucher_delivery,
                           voucher_max:  e.settings[0].max_voucher,
                           vouchers_remains: e.vouchers_remains,
-                          simple_order_time_disabled: simpleOrderTime,
-                          voucher_order_time_disabled: simpleVoucherTime
+                          simple_order_time_disabled: e.settings[0].simple_order_time_disabled ? e.settings[0].simple_order_time_disabled.map(e => `${e}  `) : '',
+                          voucher_order_time_disabled: e.settings[0].voucher_order_time_disabled ? e.settings[0].voucher_order_time_disabled.map(e =>  `${e}  `) : ''
                       }
                   ])
               })
           })
     }, [])
-
-    useEffect(() => {
-      console.log({calendar})
-    }, [calendar])
-
-
+    
     return (
       <div>
         <StyledCalendar>

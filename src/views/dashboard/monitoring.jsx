@@ -72,7 +72,7 @@ const Monitoring = () => {
 
     useEffect(() => {    
       Pusher.logToConsole = true;
-        
+
       const pusher = new Pusher('c5d9a52120e033bb2f56', {
         app_id: "1289297",
         key: "c5d9a52120e033bb2f56",
@@ -82,11 +82,9 @@ const Monitoring = () => {
   
       const channel = pusher.subscribe('setting-update');
       channel.bind('setting-update', (data) => {
-
-        alert(JSON.stringify(data));
-
-        allRestaurants= data;
-        allRestaurants.restaurantsSettings.map((e,i) => {
+        setRestaurants([]);
+        alert('yes')
+        data.restaurantsSettings.map((e,i) => {
           setRestaurants(prevState => [...prevState,
                   {
                       id: i ,

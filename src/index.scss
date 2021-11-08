@@ -1,2 +1,9 @@
 //This is app scss
 @import "assets/scss/style.scss";
+
+.rdt_TableCell {
+    white-space: unset;
+    div {
+        white-space: break-spaces !important;
+    }
+}
